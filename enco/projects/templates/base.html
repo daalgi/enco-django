@@ -15,39 +15,69 @@
         {% block head %}
             <title>Encom</title>
         {% endblock %}
+        {% block stylesheet%}{% endblock %}
     </head>
 
     <body>
-        <br>
-        <div class="row">
-            <div class="col-md-3">
-
+        
+        <div class="container">
+            {% block body %}
+                <!-- Static navbar -->
+                <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+                    <a class="navbar-brand" href="#">ENCO</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" 
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <ul class="navbar-nav navbar-right">
+                            <li class="nav-link"><a href="{% url 'accounts:login' %}">Login</a></li>
+                            <li class="nav-link"><a href="{% url 'accounts:signup' %}">Singup</a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </nav>
+            
+                <br>
                 <div class="container">
-                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Dashboard</a>
-                        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Projects</a>
-                        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Billing</a>
-                        <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
-                    </div>
-                    <div class="tab-content" id="v-pills-tabContent">
-                        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">...</div>
-                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
-                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
-                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="col-md-8">
+                    {% block breadcrumb %}
 
-                {% block body %}
+                        <div class="row">
+                                <div class="col-md-3">
+            
+                                    <div class="container">
+                                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                            <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Dashboard</a>
+                                            <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Projects</a>
+                                            <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Billing</a>
+                                            <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
+                                        </div>
+                                        <div class="tab-content" id="v-pills-tabContent">
+                                            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">...</div>
+                                            <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
+                                            <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
+                                            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-8">
+                                    
+                                    {% block content %}
+                                    
+                                    {% endblock content%}
+            
+                                </div>
+                            </div>        
 
-                {% endblock %}
+                    {% endblock breadcrumb %}
+            
 
-            </div>
-        </div>
+            {% endblock body %}
+        </div><!-- /.body container -->        
+        
         <br>
-
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
