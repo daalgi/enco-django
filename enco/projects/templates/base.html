@@ -40,8 +40,8 @@
                 </nav>
             
                 <br>
-                <div class="container">
-                    {% block breadcrumb %}
+                {% block breadcrumb %}
+                    <div class="container">
 
                         <div class="row">
                                 <div class="col-md-3">
@@ -69,9 +69,10 @@
                                     {% endblock content%}
             
                                 </div>
-                            </div>        
+                        </div>        
 
-                    {% endblock breadcrumb %}
+                    </div>
+                {% endblock breadcrumb %}
             
 
             {% endblock body %}
