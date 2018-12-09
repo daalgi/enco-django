@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
-{% block breadcrumb %}
-    <div class="container">
-        <div class="row justify-content-center">
+{% block body %}
+<div class="container">
+    <h1 class="text-center logo my-4">
+        <a href="{% url 'home:home' %}">ENCO</a>
+    </h1>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                        <h2 class="text-center logo my-4">Log in</h2>
+                    <h3 class="card-title">Log in</h3>
                         <form method="post" novalidate>
                             {% csrf_token %}
                             {% include "accounts/form.html" with form=form %}
@@ -13,7 +17,7 @@
                         </form>
                 </div>
                 <div class="card-footer text-muted text-center">
-                    Create an account? <a href="{% url 'accounts:signup' %}">Register</a>
+                    Create an account? <a href="{% url 'accounts:register' %}">Register</a>
                 </div>
                 <div class="text-center py-2">
                     <small>
@@ -23,4 +27,5 @@
             </div>            
         </div>
     </div>
+</div>
 {% endblock %}

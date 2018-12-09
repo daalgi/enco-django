@@ -10,12 +10,16 @@
                 crossorigin="anonymous"></script>
         
         {% load static %}
-        <link rel="stylesheet" href={% static 'enco/style.css' %} type="text/css">
+        
+        {% block stylesheet %}
+            <link rel="stylesheet" href="{% static 'home/style.css' %}" type="text/css">
+        {% endblock stylesheet %}
+        
 
         {% block head %}
             <title>Encom</title>
         {% endblock %}
-        {% block stylesheet%}{% endblock %}
+        
     </head>
 
     <body>
@@ -24,17 +28,31 @@
             {% block body %}
                 <!-- Static navbar -->
                 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-                    <a class="navbar-brand" href="#">ENCO</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" 
+                    <a class="navbar-brand" href="{% url 'home:home' %}">ENCO</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="navbarCollapse" 
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     
                     <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="navbarCollapse">
-                        <ul class="navbar-nav navbar-right">
-                            <li class="nav-link"><a href="{% url 'accounts:login' %}">Login</a></li>
-                            <li class="nav-link"><a href="{% url 'accounts:signup' %}">Singup</a></li>
+                    <div class="collapse navbar-collapse" id="mainMenu">
+                        <ul class="navbar-nav ml-auto">
+                            {% if user.is_authenticated %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {{ user.username}}
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                                        <a class="dropdown-item" href="#">My account</a>
+                                        <a class="dropdown-item" href="{% url 'accounts:password_change' %}">Change password</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a>
+                                    </div>
+                                </li>                                
+                            {% else %}
+                                <li class="nav-link"><a href="{% url 'accounts:login' %}" class="btn btn-outline-secondary">Log in</a></li>
+                                <li class="nav-link"><a href="{% url 'accounts:register' %}" class="btn btn-outline-secondary">Register</a></li>
+                            {% endif %}
                         </ul>
                     </div><!-- /.navbar-collapse -->
                 </nav>
@@ -86,6 +104,10 @@
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+        <!-- <script src="{% static 'js/jquery-3.3.1.min' %}"></script>
+        <script src="{% static 'js/popper.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+         -->
     </body>
 
 </html>

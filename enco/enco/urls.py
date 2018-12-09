@@ -15,12 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-import projects.views
+from enco import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', projects.views.DashBoard.as_view()),
-    path('dashboard/', projects.views.DashBoard.as_view()),
+    path('', views.login_redirect, name='login_redirect'),
+    path('home/', include(('home.urls', 'home'), namespace='home')),
+    #path('dashboard/', enco.views.DashBoard.as_view()),
     path('projects/', include(('projects.urls', 'projects'), namespace='projects')),
     path('accounts/', include(('accounts.urls', 'accounts'), namespace='accounts')),
 ]
