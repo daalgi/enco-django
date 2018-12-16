@@ -21,7 +21,7 @@ urlpatterns = [
         name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(
         template_name='accounts/password_reset_done.html'), name='password_reset_done'),
-    path('password_reset/confirm/', auth_views.PasswordResetConfirmView.as_view(
+    path('password_reset/confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
         template_name='accounts/password_reset_confirm.html',
         success_url='/accounts/password_reset/complete/'), name='password_reset_confirm'),
     path('password_reset/complete/', auth_views.PasswordResetCompleteView.as_view(
