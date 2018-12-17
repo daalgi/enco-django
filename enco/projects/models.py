@@ -2,15 +2,15 @@ from django.db import models
 from contacts.models import Company
 
 
-def increment_project_id():
-    pass
+# def increment_project_id():
+#     pass
 
-def increment_task_id(stage):
-    #https://techstream.org/Web-Development/Custom-Auto-Increment-Field-Django
-    last_task = Task.objects.all().filter(stage).last()
+# def increment_task_id(stage):
+#     #https://techstream.org/Web-Development/Custom-Auto-Increment-Field-Django
+#     last_task = Task.objects.all().filter(stage).last()
 
-def increment_revision_id():
-    pass
+# def increment_revision_id():
+#     pass
 
 class Contract(models.Model):
     created = models.DateField(auto_now_add=True)
@@ -22,19 +22,28 @@ class Contract(models.Model):
     deadline = models.DateField(default=None, null=True, blank=True)
     def __str__(self):
         if self.signed is not None:
-            return (f'Signed: {str(self.signed)}, Client: {self.client}')
+            return (f'Signed: {str(self.signed)}, Provider: {self.provider}, Client: {self.client}')
         else:
-            return (f'Created: {str(self.created)}, Client: {self.client}')
+            return (f'Created: {str(self.created)}, Provider: {self.provider}, Client: {self.client}')
 
 
 class Project(models.Model):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    internal_id = models.PositiveIntegerField(unique=True)
+    internal_id = models.PositiveIntegerField(blank=True, null=True)
     name = models.CharField(max_length=50)
     country = models.CharField(max_length=30)
 
     def __str__(self):
         return (f"{self.internal_id} - {self.name} ({self.country})")
+
+    def save(self, *args, **kwargs):
+        if self.internal_id is None:
+            last_internal_id = Project.objects.filter(contract__provider=self.contract.provider).aggregate(max_id=models.Max('internal_id')).get('max_id', 0)
+            if last_internal_id is None:
+                self.internal_id = 1  
+            else:
+                self.internal_id = last_internal_id + 1
+        super().save(*args, **kwargs)
 
 
 class Stage(models.Model):
@@ -58,7 +67,7 @@ class TaskType(models.Model):
         
 
 class Task(models.Model):
-    task_id = models.PositiveIntegerField(default=increment_task_id, editable=False)
+    task_id = models.PositiveIntegerField()
     stage = models.ForeignKey(Stage, related_name='tasks', on_delete=models.CASCADE)
     scope = models.ForeignKey(ScopeType, related_name='+', on_delete=models.CASCADE)
     task_type = models.ForeignKey(TaskType, related_name='+', on_delete=models.CASCADE)
@@ -68,14 +77,9 @@ class Task(models.Model):
     def __str__(self):
         return f'{self.stage.project.internal_id}.{self.task_id} - {self.scope} - {self.task_type}'
 
-    @property
-    def task_id(self):
-        tasks = 
-
-
 
 class Revision(models.Model):
-    revision_id = models.PositiveIntegerField(default=increment_revision_id)
+    revision_id = models.PositiveIntegerField(default=0)
     task = models.ForeignKey(Task, related_name='revisions', on_delete=models.CASCADE)
     comments = models.TextField(max_length=300, blank=True)
     
