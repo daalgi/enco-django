@@ -1,6 +1,6 @@
 from django.urls import path
-from projects.views import DashBoard
+from projects.views import ProjectsList
 
 urlpatterns = [
-    path('dashboard/', DashBoard.as_view(), name='dashboard')
+    path('', ProjectsList.as_view(), name='list')
 ]

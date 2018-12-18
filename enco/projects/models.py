@@ -48,10 +48,21 @@ class Project(models.Model):
 
 class Stage(models.Model):
     project = models.ForeignKey(Project, related_name='stages', on_delete=models.CASCADE)
+    internal_id = models.PositiveIntegerField(blank=True, null=True)
     name = models.CharField(max_length=50, blank=True)
     created = models.DateField(auto_now_add=True)
+
     def __str__(self):
-        return f"{self.project.internal_id} - {self.name}"
+        return f"{self.project.contract.provider.name} - {self.project.internal_id} - Stage {self.internal_id} {self.name}"
+
+    def save(self, *args, **kwargs):
+        if self.internal_id is None:
+            last_internal_id = Stage.objects.filter(project=self.project).aggregate(max_id=models.Max('internal_id')).get('max_id', 0)
+            if last_internal_id is None:
+                self.internal_id = 1  
+            else:
+                self.internal_id = last_internal_id + 1
+        super().save(*args, **kwargs)
 
 
 class ScopeType(models.Model):
@@ -67,21 +78,38 @@ class TaskType(models.Model):
         
 
 class Task(models.Model):
-    task_id = models.PositiveIntegerField()
     stage = models.ForeignKey(Stage, related_name='tasks', on_delete=models.CASCADE)
+    internal_id = models.PositiveIntegerField(blank=True, null=True)
     scope = models.ForeignKey(ScopeType, related_name='+', on_delete=models.CASCADE)
     task_type = models.ForeignKey(TaskType, related_name='+', on_delete=models.CASCADE)
     description = models.CharField(max_length=50, default='', blank=True)
     deadline = models.DateField()
 
     def __str__(self):
-        return f'{self.stage.project.internal_id}.{self.task_id} - {self.scope} - {self.task_type}'
+        return f'{self.stage}.{self.internal_id} - {self.task_type}'
 
+    def save(self, *args, **kwargs):
+        if self.internal_id is None:
+            last_internal_id = Task.objects.filter(stage=self.stage).aggregate(max_id=models.Max('internal_id')).get('max_id', 0)
+            if last_internal_id is None:
+                self.internal_id = 1  
+            else:
+                self.internal_id = last_internal_id + 1
+        super().save(*args, **kwargs)
 
 class Revision(models.Model):
-    revision_id = models.PositiveIntegerField(default=0)
     task = models.ForeignKey(Task, related_name='revisions', on_delete=models.CASCADE)
+    internal_id = models.PositiveIntegerField(blank=True, null=True)
     comments = models.TextField(max_length=300, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.internal_id is None:
+            last_internal_id = Revision.objects.filter(task=self.task).aggregate(max_id=models.Max('internal_id')).get('max_id', 0)
+            if last_internal_id is None:
+                self.internal_id = 0  
+            else:
+                self.internal_id = last_internal_id + 1
+        super().save(*args, **kwargs)
     
     def __str__(self):
-        return f'{self.task} - Rev.{self.revision_id}'
+        return f'{self.task} - Rev.{self.internal_id}'

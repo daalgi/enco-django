@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+
+{% for project in projects %}
+  <div class="card">
+    <div class="card-header">
+      {{% project.internal_id %}}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{% project.name %}}</h5>
+      <!-- <p class="card-text">{{% revi %}}</p> -->
+      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock breadcrumb %}
