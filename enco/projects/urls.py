@@ -1,6 +1,7 @@
 from django.urls import path
-from projects.views import ProjectsList
+import projects.views as views
 
 urlpatterns = [
-    path('', ProjectsList.as_view(), name='list')
+    path('list/', views.projects_list, name='list'),
+    path('detail/<int:internal_id>/', views.project_detail, name='detail')
 ]

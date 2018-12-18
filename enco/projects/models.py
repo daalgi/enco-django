@@ -2,18 +2,9 @@ from django.db import models
 from contacts.models import Company
 
 
-# def increment_project_id():
-#     pass
-
-# def increment_task_id(stage):
-#     #https://techstream.org/Web-Development/Custom-Auto-Increment-Field-Django
-#     last_task = Task.objects.all().filter(stage).last()
-
-# def increment_revision_id():
-#     pass
-
 class Contract(models.Model):
     created = models.DateField(auto_now_add=True)
+    internal_id = models.PositiveIntegerField(blank=True, null=True)    
     #status = models.CharField(max_length=20, default='negotiation')
     provider = models.ForeignKey(Company, related_name='provider', on_delete=models.CASCADE)
     client = models.ForeignKey(Company, related_name='client', on_delete=models.CASCADE)
@@ -22,9 +13,18 @@ class Contract(models.Model):
     deadline = models.DateField(default=None, null=True, blank=True)
     def __str__(self):
         if self.signed is not None:
-            return (f'Signed: {str(self.signed)}, Provider: {self.provider}, Client: {self.client}')
+            return (f'{self.provider.name} #{self.internal_id} - Signed: {str(self.created)}, Client: {self.client}')
         else:
-            return (f'Created: {str(self.created)}, Provider: {self.provider}, Client: {self.client}')
+            return (f'{self.provider.name} #{self.internal_id} - Created: {str(self.created)}, Client: {self.client}')
+
+    def save(self, *args, **kwargs):
+        if self.internal_id is None:
+            last_internal_id = Contract.objects.filter(provider=self.provider).aggregate(max_id=models.Max('internal_id')).get('max_id', 0)
+            if last_internal_id is None:
+                self.internal_id = 1  
+            else:
+                self.internal_id = last_internal_id + 1
+        super().save(*args, **kwargs)
 
 
 class Project(models.Model):
@@ -53,7 +53,7 @@ class Stage(models.Model):
     created = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.project.contract.provider.name} - {self.project.internal_id} - Stage {self.internal_id} {self.name}"
+        return f"{self.project.contract.provider.name} - P{self.project.internal_id} - S{self.internal_id} {self.name}"
 
     def save(self, *args, **kwargs):
         if self.internal_id is None:

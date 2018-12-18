@@ -1,18 +1,24 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb %}
-
-{% for project in projects %}
-  <div class="card">
-    <div class="card-header">
-      {{% project.internal_id %}}
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">{{% project.name %}}</h5>
-      <!-- <p class="card-text">{{% revi %}}</p> -->
-      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-    </div>
-  </div>
-{% endfor %}
-
+<div class="table">
+  <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Country</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in projects %}
+          <tr>
+            <th scope="row">{{project.internal_id}}</th>
+            <td><a href="{% url 'projects:detail' internal_id=project.internal_id %}">{{project.name}}</a></td>
+            <td>{{project.country}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+</div>
 {% endblock breadcrumb %}
